@@ -116,16 +116,21 @@ const AboutPage = () => {
   // Memoized calculations
   const { totalProjects, totalCertificates, YearExperience } = useMemo(() => {
     const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
-    const storedCertificates = JSON.parse(localStorage.getItem("certificates") || "[]");
+    // Hardcode the certificates count since they're in the public folder
+    const certificates = [
+      "/public/Desarrollo Web.png", 
+      "/public/QA Testing.png",
+      "/public/Titulo Prog-1.png",
+    ];
     
-    const startDate = new Date("2021-11-06");
+    const startDate = new Date("2024-01-01");
     const today = new Date();
     const experience = today.getFullYear() - startDate.getFullYear() -
       (today < new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0);
 
     return {
-      totalProjects: storedProjects.length,
-      totalCertificates: storedCertificates.length,
+      /* totalProjects: storedProjects.length, */
+      totalCertificates: certificates.length,
       YearExperience: experience
     };
   }, []);
@@ -205,7 +210,7 @@ const AboutPage = () => {
                 data-aos="fade-right"
                 data-aos-duration="1300"
               >
-                Eki Zulfar Rachman
+                Octavio Díaz
               </span>
             </h2>
             
@@ -214,21 +219,25 @@ const AboutPage = () => {
               data-aos="fade-right"
               data-aos-duration="1500"
             >
-              seorang siswa Teknik Jaringan Komputer dan Telekomunikasi yang
-              tertarik dalam pengembangan Front-End. Saya berfokus pada
-              menciptakan pengalaman digital yang menarik dan selalu berusaha
-              memberikan solusi terbaik dalam setiap proyek.
+              A passionate Front-End Developer with a keen eye for creating engaging user experiences. 
+              I specialize in building responsive and intuitive web applications using modern technologies 
+              like React. With a strong foundation in web development principles, I'm dedicated to crafting 
+              clean, efficient code and delivering innovative digital solutions that exceed expectations.
             </p>
 
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4 lg:gap-4 lg:px-0 w-full">
-              <a href="https://drive.google.com/drive/folders/1BOm51Grsabb3zj6Xk27K-iRwI1zITcpo" className="w-full lg:w-auto">
-              <button 
-                data-aos="fade-up"
-                data-aos-duration="800"
-                className="w-full lg:w-auto sm:px-6 py-2 sm:py-3 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white font-medium transition-all duration-300 hover:scale-105 flex items-center justify-center lg:justify-start gap-2 shadow-lg hover:shadow-xl animate-bounce-slow"
+              <a 
+                href="/Resume Octavio Diaz.pdf" 
+                download="Resume Octavio Diaz.pdf"
+                className="w-full lg:w-auto"
               >
-                <FileText className="w-4 h-4 sm:w-5 sm:h-5" /> Download CV
-              </button>
+                <button 
+                  data-aos="fade-up"
+                  data-aos-duration="800"
+                  className="w-full lg:w-auto sm:px-6 py-2 sm:py-3 rounded-lg bg-gradient-to-r from-[#6366f1] to-[#a855f7] text-white font-medium transition-all duration-300 hover:scale-105 flex items-center justify-center lg:justify-start gap-2 shadow-lg hover:shadow-xl animate-bounce-slow"
+                >
+                  <FileText className="w-4 h-4 sm:w-5 sm:h-5" /> Download Resume
+                </button>
               </a>
               <a href="#Portofolio" className="w-full lg:w-auto">
               <button 

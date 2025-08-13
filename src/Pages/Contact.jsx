@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Share2, User, Mail, MessageSquare, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import SocialLinks from "../components/SocialLinks";
-import Komentar from "../components/Commentar";
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -29,8 +28,26 @@ const ContactPage = () => {
     }));
   };
 
+  const validateEmail = (email) => {
+    // More comprehensive email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Email validation
+    if (!validateEmail(formData.email)) {
+      Swal.fire({
+        title: 'Invalid Email!',
+        text: 'Please enter a valid email address.',
+        icon: 'error',
+        confirmButtonColor: '#6366f1'
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     Swal.fire({
@@ -43,29 +60,41 @@ const ContactPage = () => {
     });
 
     try {
-      // Get form data
-      const form = e.target;
-      const formData = new FormData(form);
+      // Create FormData manually to avoid form submission
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('message', formData.message);
+      formDataToSend.append('_template', 'table');
+      formDataToSend.append('_captcha', 'false');
+      formDataToSend.append('_subject', 'New Contact Form Message from Portfolio');
 
-      // Submit form
-      await form.submit();
-
-      // Show success message
-      Swal.fire({
-        title: 'Success!',
-        text: 'Your message has been sent successfully!',
-        icon: 'success',
-        confirmButtonColor: '#6366f1',
-        timer: 2000,
-        timerProgressBar: true
+      // Submit to FormSubmit using fetch
+      const response = await fetch('https://formsubmit.co/octaviodiaz262@gmail.com', {
+        method: 'POST',
+        body: formDataToSend
       });
 
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
+      if (response.ok) {
+        // Show success message
+        Swal.fire({
+          title: 'Success!',
+          text: 'Your message has been sent successfully!',
+          icon: 'success',
+          confirmButtonColor: '#6366f1',
+          timer: 2000,
+          timerProgressBar: true
+        });
+
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        });
+      } else {
+        throw new Error('Form submission failed');
+      }
     } catch (error) {
       Swal.fire({
         title: 'Error!',
@@ -109,12 +138,12 @@ const ContactPage = () => {
       </div>
 
       <div
-        className="h-auto py-10 flex items-center justify-center px-[5%] md:px-0"
+        className="min-h-screen flex items-center justify-center px-[5%] md:px-0"
         id="Contact"
       >
-        <div className="container px-[1%] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-[45%_55%] 2xl:grid-cols-[35%_65%] gap-12">
+        <div className="w-full max-w-2xl mx-auto">
           <div
-            data-aos="fade-right"
+            data-aos="fade-up"
             data-aos-duration="1200"
             className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl p-5 py-10 sm:p-10 transform transition-all duration-300 hover:shadow-[#6366f1]/10"
           >
@@ -131,14 +160,9 @@ const ContactPage = () => {
             </div>
 
             <form 
-              action="https://formsubmit.co/ekizulfarrachman@gmail.com"
-              method="POST"
               onSubmit={handleSubmit}
               className="space-y-6"
             >
-              {/* FormSubmit Configuration */}
-              <input type="hidden" name="_template" value="table" />
-              <input type="hidden" name="_captcha" value="false" />
 
               <div
                 data-aos="fade-up"
@@ -163,16 +187,16 @@ const ContactPage = () => {
                 className="relative group"
               >
                 <Mail className="absolute left-4 top-4 w-5 h-5 text-gray-400 group-focus-within:text-[#6366f1] transition-colors" />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                  className="w-full p-4 pl-12 bg-white/10 rounded-xl border border-white/20 placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 transition-all duration-300 hover:border-[#6366f1]/30 disabled:opacity-50"
-                  required
-                />
+                                 <input
+                   type="email"
+                   name="email"
+                   placeholder="Your Email"
+                   value={formData.email}
+                   onChange={handleChange}
+                   disabled={isSubmitting}
+                   className="w-full p-4 pl-12 bg-white/10 rounded-xl border border-white/20 placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-[#6366f1]/30 transition-all duration-300 hover:border-[#6366f1]/30 disabled:opacity-50"
+                   required
+                 />
               </div>
               <div
                 data-aos="fade-up"
@@ -205,10 +229,6 @@ const ContactPage = () => {
             <div className="mt-10 pt-6 border-t border-white/10 flex justify-center space-x-6">
               <SocialLinks />
             </div>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-3 py-3 md:p-10 md:py-8 shadow-2xl transform transition-all duration-300 hover:shadow-[#6366f1]/10">
-            <Komentar />
           </div>
         </div>
       </div>

@@ -5,6 +5,11 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen"
 
 const Certificate = ({ ImgSertif }) => {
 	const [open, setOpen] = useState(false)
+	const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+	// Handle both single image and array of images
+	const images = Array.isArray(ImgSertif) ? ImgSertif : [ImgSertif]
+	const currentImage = images[currentImageIndex]
 
 	const handleOpen = () => {
 		setOpen(true)
@@ -12,6 +17,15 @@ const Certificate = ({ ImgSertif }) => {
 
 	const handleClose = () => {
 		setOpen(false)
+		setCurrentImageIndex(0) // Reset to first image when closing
+	}
+
+	const handleNextImage = () => {
+		setCurrentImageIndex((prev) => (prev + 1) % images.length)
+	}
+
+	const handlePrevImage = () => {
+		setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
 	}
 
 	return (
@@ -57,11 +71,11 @@ const Certificate = ({ ImgSertif }) => {
 					}}>
 					<img
 						className="certificate-image"
-						src={ImgSertif}
+						src={currentImage}
 						alt="Certificate"
 						style={{
 							width: "100%",
-							height: "auto",
+							height: "200px",
 							display: "block",
 							objectFit: "cover",
 							filter: "contrast(1.10) brightness(0.9) saturate(1.1)",
@@ -69,6 +83,25 @@ const Certificate = ({ ImgSertif }) => {
 						}}
 						onClick={handleOpen}
 					/>
+					{/* Image counter for multiple images */}
+					{images.length > 1 && (
+						<Box
+							sx={{
+								position: "absolute",
+								top: 8,
+								right: 8,
+								backgroundColor: "rgba(0, 0, 0, 0.7)",
+								color: "white",
+								padding: "4px 8px",
+								borderRadius: "12px",
+								fontSize: "12px",
+								fontWeight: "bold",
+								zIndex: 3,
+							}}
+						>
+							{currentImageIndex + 1} / {images.length}
+						</Box>
+					)}
 				</Box>
 
 				{/* Hover Overlay */}
@@ -176,9 +209,59 @@ const Certificate = ({ ImgSertif }) => {
 						<CloseIcon sx={{ fontSize: 24 }} />
 					</IconButton>
 
+					{/* Navigation buttons for multiple images */}
+					{images.length > 1 && (
+						<>
+							<IconButton
+								onClick={handlePrevImage}
+								sx={{
+									position: "absolute",
+									left: 16,
+									top: "50%",
+									transform: "translateY(-50%)",
+									color: "white",
+									bgcolor: "rgba(0,0,0,0.6)",
+									zIndex: 1,
+									padding: 1,
+									"&:hover": {
+										bgcolor: "rgba(0,0,0,0.8)",
+										transform: "translateY(-50%) scale(1.1)",
+									},
+								}}
+								size="large"
+							>
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+									<polyline points="15,18 9,12 15,6"></polyline>
+								</svg>
+							</IconButton>
+							<IconButton
+								onClick={handleNextImage}
+								sx={{
+									position: "absolute",
+									right: 16,
+									top: "50%",
+									transform: "translateY(-50%)",
+									color: "white",
+									bgcolor: "rgba(0,0,0,0.6)",
+									zIndex: 1,
+									padding: 1,
+									"&:hover": {
+										bgcolor: "rgba(0,0,0,0.8)",
+										transform: "translateY(-50%) scale(1.1)",
+									},
+								}}
+								size="large"
+							>
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+									<polyline points="9,18 15,12 9,6"></polyline>
+								</svg>
+							</IconButton>
+						</>
+					)}
+
 					{/* Modal Image */}
 					<img
-						src={ImgSertif}
+						src={currentImage}
 						alt="Certificate Full View"
 						style={{
 							display: "block",
@@ -188,6 +271,27 @@ const Certificate = ({ ImgSertif }) => {
 							objectFit: "contain",
 						}}
 					/>
+
+					{/* Image counter in modal */}
+					{images.length > 1 && (
+						<Box
+							sx={{
+								position: "absolute",
+								bottom: 16,
+								left: "50%",
+								transform: "translateX(-50%)",
+								backgroundColor: "rgba(0, 0, 0, 0.7)",
+								color: "white",
+								padding: "8px 16px",
+								borderRadius: "20px",
+								fontSize: "14px",
+								fontWeight: "bold",
+								zIndex: 1,
+							}}
+						>
+							{currentImageIndex + 1} / {images.length}
+						</Box>
+					)}
 				</Box>
 			</Modal>
 		</Box>
